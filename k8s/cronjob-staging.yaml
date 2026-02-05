@@ -1,0 +1,68 @@
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: k6-hec-loadtest-staging
+  namespace: default
+  labels:
+    app: k6-hec-loadtest-staging
+    owner: divyanshu.mittal
+spec:
+  # Schedule: Every day at 8 AM PST (4 PM UTC / 16:00 UTC)
+  # Note: During PDT (summer), this will be 9 AM PDT
+  schedule: "0 16 * * *"
+
+  # Keep history for debugging
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 1
+
+  # Don't start new job if previous one is still running
+  concurrencyPolicy: Forbid
+
+  jobTemplate:
+    spec:
+      # Run 8 pods in parallel for high volume load
+      # Each pod runs 1000 VUs = 8000 total VUs
+      parallelism: 8
+      completions: 8
+
+      # Maximum time job can run (1 hour + 10 min buffer)
+      activeDeadlineSeconds: 4200  # 70 minutes
+
+      # Don't retry failed pods
+      backoffLimit: 0
+
+      template:
+        metadata:
+          labels:
+            app: k6-hec-loadtest-staging
+            component: load-generator
+        spec:
+          restartPolicy: Never
+
+          containers:
+          - name: k6
+            image: 791934400897.dkr.ecr.us-east-1.amazonaws.com/k6-hec-loadtest-divy:staging-v1
+            imagePullPolicy: Always
+
+            # Override default k6 command for high-volume test
+            # 1000 VUs × 8 pods = 8000 VUs total
+            # ~10 req/sec per VU = ~80,000 events/sec
+            args:
+              - "run"
+              - "--vus=1000"
+              - "--duration=1h"
+              - "/scripts/hec-loadtest-k8s-staging.js"
+
+            resources:
+              requests:
+                cpu: 1000m      # 1 CPU core
+                memory: 1Gi
+              limits:
+                cpu: 2000m      # Max 2 CPU cores
+                memory: 2Gi
+
+            env:
+            # Disable k6 usage reporting
+            - name: K6_NO_USAGE_REPORT
+              value: "true"

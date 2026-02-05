@@ -1,0 +1,14 @@
+# Dockerfile for k6 HEC load testing - Staging
+# Extends official k6 image with staging test script
+
+FROM grafana/k6:latest
+
+# Copy the staging k6 test script into the image
+COPY hec-loadtest-k8s-staging.js /scripts/hec-loadtest-k8s-staging.js
+
+# Set working directory
+WORKDIR /scripts
+
+# k6 is the entrypoint (inherited from base image)
+ENTRYPOINT ["k6"]
+CMD ["run", "/scripts/hec-loadtest-k8s-staging.js"]

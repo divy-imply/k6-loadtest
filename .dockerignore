@@ -1,0 +1,27 @@
+# Don't copy these files into Docker image
+
+# Documentation
+*.md
+
+# Original local test script (not needed in k8s image)
+hec-loadtest.js
+
+# Scripts (not needed in image)
+*.sh
+create-pipelines.sh
+send_test_events.sh
+test-timestamps.js
+
+# Kubernetes manifests
+k8s/
+
+# Git
+.git/
+.gitignore
+
+# IDE
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
