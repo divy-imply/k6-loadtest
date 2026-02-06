@@ -14,7 +14,8 @@ export const options = {
 
 // HEC endpoint configuration - Staging
 const HEC_URL = 'https://splunk-hec.lumi-ent-v1.staging.imply.io/services/collector';
-const HEC_TOKEN = '34acfd64-e5cd-46d0-96e7-47908e29e0c3';
+// HEC token from staging integration: Lumi UI > Integrations > HEC > Keys
+const HEC_TOKEN = __ENV.HEC_TOKEN || 'REPLACE_WITH_STAGING_HEC_TOKEN';
 
 // Email domains for redaction testing
 const emailDomains = ['example.com', 'company.org', 'internal.net', 'corp.io', 'staging.dev'];

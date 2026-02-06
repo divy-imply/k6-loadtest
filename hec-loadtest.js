@@ -20,7 +20,8 @@ export const options = {
 
 // HEC endpoint configuration
 const HEC_URL = 'https://splunk-hec.lumi-ent-v1.dev.imply.io/services/collector';
-const HEC_TOKEN = 'b4c4caa1-6c05-4174-84d8-f4a925790ba5';
+// HEC token from dev integration: Lumi UI > Integrations > HEC > Keys
+const HEC_TOKEN = __ENV.HEC_TOKEN || 'REPLACE_WITH_DEV_HEC_TOKEN';
 
 // Event templates with different log types
 const eventTemplates = [
